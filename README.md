@@ -4,10 +4,10 @@ This project explains how to get started with Raspberry Pi Pico on Windows (usin
 It is inspired by, and is roughly equivalent to, the pico-setup project for Linux systems and a [Digikey tutorial](https://www.digikey.com/en/maker/projects/raspberry-pi-pico-and-rp2040-cc-part-1-blink-and-vs-code/7102fb8bca95452e9df6150f39ae8422) - Windows version -> [detailed websites that follow](https://shawnhymel.com/2096/how-to-set-up-raspberry-pi-pico-c-c-toolchain-on-windows-with-vs-code/).
 
 However, Shawn Hymel's Tutorial doesn't fully explain how to get GDB / OpenOCD working with a Pico debug probe, and there aren't many explanations online.
-** The second half of this tutorial is really where I figured out how to make a debug probe work and the steps you can follow to make it work too**
+**The second half of this tutorial is really where I figured out how to make a debug probe work and the steps you can follow to make it work too**
 
 I am also leaving below a couple really awesome resources for the Pico:
-[Datasheet / Pinout)[https://datasheets.raspberrypi.com/pico/pico-datasheet.pdf]
+[Datasheet / Pinout](https://datasheets.raspberrypi.com/pico/pico-datasheet.pdf)
 [APIs / SDK / General Programming](https://www.raspberrypi.com/documentation/pico-sdk/)
 [Tutorials / Guide to Pico](https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf)
 
