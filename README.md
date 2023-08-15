@@ -6,6 +6,13 @@ It is inspired by, and is roughly equivalent to, the pico-setup project for Linu
 However, Shawn Hymel's Tutorial doesn't fully explain how to get GDB / OpenOCD working with a Pico debug probe, and there aren't many explanations online.
 ** The second half of this tutorial is really where I figured out how to make a debug probe work and the steps you can follow to make it work too**
 
+I am also leaving below a couple really awesome resources for the Pico:
+[Datasheet / Pinout)[https://datasheets.raspberrypi.com/pico/pico-datasheet.pdf]
+[APIs / SDK / General Programming](https://www.raspberrypi.com/documentation/pico-sdk/)
+[Tutorials / Guide to Pico](https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf)
+
+
+
 ## General Compiling Setup
 
 Begin by downloading [Microsoft Visual Studio Code](https://code.visualstudio.com/) as it offers many tools (compiling, debugging, and extensions).
@@ -182,7 +189,7 @@ Find which drive letter the RPI-RP2 drive is mounted to (e.g. it was G: for me).
 `cp blink.uf2 /g/`
 
 
-# Pico W Blink:
+# TODO - Pico W Blink: 
 let's build the blink example for Pico-W
 
 ```
@@ -194,3 +201,10 @@ cmake -G "MinGW Makefiles" ..
 cd ..
 make
 ```
+Problem - Didnt compile.
+
+## GNU Debugging Setup
+Debugging can be done with print statements, but at some point being able to break and see registers or run through operations helps a lot. However, such a tool is quite difficult to setup due to the complexity of the system required to debug.
+
+We will use GDB (GNU DeBugger) as it is a fairly common debugger for GNU based systems. However due to the complexity of the debugger, it requires at least one core. Although the pico has two cores, the 
+
