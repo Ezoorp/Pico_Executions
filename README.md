@@ -179,3 +179,18 @@ Now you have generated makefiles for the entire SDK and built blink. We can easi
 Put the Pico board into bootloader mode (press and hold the BOOTSEL button while plugging a USB cable into the Pico).
 
 Find which drive letter the RPI-RP2 drive is mounted to (e.g. it was G: for me). Enter the following into Git Bash (change the drive letter as necessary):
+`cp blink.uf2 /g/`
+
+
+# Pico W Blink:
+let's build the blink example for Pico-W
+
+```
+cd /c/VSARM/sdk/pico/pico-examples/
+mkdir build
+cd build
+cd pico_w
+cmake -G "MinGW Makefiles" ..
+cd ..
+make
+```
