@@ -94,10 +94,88 @@ We could download and unzip the SDK into here, but lets use git for ease of use.
 
 Open Git Bash and enter the following commands.
 
-`cd /c/VSARM/sdk/pico 
+```
+cd /c/VSARM/sdk/pico 
 git clone -b master https://github.com/raspberrypi/pico-sdk.git 
 cd pico-sdk 
 git submodule update --init 
 cd .. 
 git clone -b master https://github.com/raspberrypi/pico-examples.git
-`
+```
+![image](https://github.com/Ezoorp/Pico_Executions/assets/112518361/118ee1c4-86c6-496f-8b74-2c2a46dcd144)
+
+Note that this will cause you to compile the entire SDK everytime you compile your code.
+
+At this point, you should have all of the necessary build tools, SDK, and examples installed to start developing programs for the Raspberry Pi Pico and RP2040.
+
+# Update Env Variables
+We still want to setup some variables in path to make calling them easy and programming quick.
+
+In the Windows search bar, enter env. Click on Edit the system environment variables.
+
+In that window, click on Environment Variables…
+
+Under User variables for <username>, select Path and click Edit.
+
+Add C:\VSARM\mingw\mingw32\bin as a new entry. This will allow us to use things like gcc and ld to build C and C++ programs for Windows.
+
+Make sure you see the following entries listed:
+
+C:\VSARM\armcc\<release version>\bin
+C:\VSARM\mingw\mingw32\bin
+You might see an entry for Python if you chose to install Python for the current user (as I did).
+
+Under User variables for <username>, click New… and add the following entry:
+
+Variable name: PICO_SDK_PATH
+Variable value: C:\VSARM\sdk\pico\pico-sdk
+
+At this point your environment variables should include some new path variables and a new user variable:
+
+![image](https://github.com/Ezoorp/Pico_Executions/assets/112518361/316d2218-b6d6-4ac5-9178-521e52cd5e1a)
+
+Under System variables, select Path and click Edit. Check to make sure you see the following entries (add them if you do not see them):
+
+C:\Program Files\CMake\bin
+C:\Program Files\Git\cmd
+
+Click OK on all 3 of the open windows to close them and save changes.
+
+At this point, you should be able to open a commend prompt and enter commands like `gcc, make, and echo %PICO_SDK_PATH%` to make sure the environment variables were set correctly.
+
+![image](https://github.com/Ezoorp/Pico_Executions/assets/112518361/f1cd2c11-d616-4c31-8bc1-e58eb6ef25f0)
+
+# Test Compiler / Build Env
+Now that we have everything setup for building code, lets test it. Open VS Code and click Terminal > new terminal. The default window is likely a windows powershell, but we want a Git Bash, so click the drop down and select new git bash
+
+<img width="673" alt="image" src="https://github.com/Ezoorp/Pico_Executions/assets/112518361/54650130-8286-4659-814c-7c0617e18085">
+
+Just like we did with the make.bat file (for Windows terminals), I recommend creating an alias for mingw32-make.exe in Git Bash. Enter the following commands (you will only need to do this once):
+
+```
+echo "alias make=mingw32-make.exe" >> ~/.bashrc
+source ~/.bashrc
+```
+
+Now we will build the blink example and make our Pico blink!
+
+```
+cd /c/VSARM/sdk/pico/pico-examples/
+mkdir build
+cd build
+cmake -G "MinGW Makefiles" ..
+cd blink
+make
+```
+
+** Common Error: ** If it returns "Cmake Error at pico_sdk_import.cmake Please set SDK PATH" implies just that. If you hadn't set the env variables, go do that. Otherwise close and reopen VS Code or Reboot. Usually VS Code doesn't catch that you changed the variables unless it is turned on and off.
+
+** Note: ** Any time you call CMake from a terminal like this, you will need to specify “MinGW Makefiles” as the build system generator (-G option).
+
+** Note: ** The Pico-W is slightly different from the Pico. For blink and similar examples, compile the examples within the pico-w/wifi/ like blink. More on how to compile for WiFi in a later project.
+
+Now you have generated makefiles for the entire SDK and built blink. We can easily upload the .uf2 file to our Pico without any special tools.
+
+Put the Pico board into bootloader mode (press and hold the BOOTSEL button while plugging a USB cable into the Pico).
+
+Find which drive letter the RPI-RP2 drive is mounted to (e.g. it was G: for me). Enter the following into Git Bash (change the drive letter as necessary):
