@@ -81,3 +81,23 @@ To enable long paths, search for "regedit" in the Windows search bar and run the
 
 # Install Git
 Git makes downloading the SDK and other peoples' code much easier. We can change the shell in Vs Code to Git Bash so we are essentially operating on a Linux.
+
+Download [Git here](https://git-scm.com/download/win)
+
+When you get to the screen asking you to choose a default editor, feel free to pick whatever you want. I chose emacs because I know it (barely) enough to edit git comments.
+
+# Setup Pico SDK
+The Pico SDK contains tools and libraries developed for the Pico / RP2040. Whenever we call the SDK for libraries, we will call this folder:
+create a folder named pico in C:\VSARM\sdk
+
+We could download and unzip the SDK into here, but lets use git for ease of use.
+
+Open Git Bash and enter the following commands.
+
+`cd /c/VSARM/sdk/pico 
+git clone -b master https://github.com/raspberrypi/pico-sdk.git 
+cd pico-sdk 
+git submodule update --init 
+cd .. 
+git clone -b master https://github.com/raspberrypi/pico-examples.git
+`
