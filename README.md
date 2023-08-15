@@ -1,10 +1,12 @@
-# Pico_Executions
+## Pico Executions Project
 
-This project aims to explain how to get started with Raspberry Pi Pico on Windows (using the C/C++ SDK and GDB with a Pico Probe) and other RP2040-based boards. It is inspired by, and is roughly equivalent to, the pico-setup project for Linux systems. I learned most of this through a [Digikey tutorial](https://www.digikey.com/en/maker/projects/raspberry-pi-pico-and-rp2040-cc-part-1-blink-and-vs-code/7102fb8bca95452e9df6150f39ae8422) and the [detailed websites that follow](https://shawnhymel.com/2096/how-to-set-up-raspberry-pi-pico-c-c-toolchain-on-windows-with-vs-code/), but also many online forums / messing around myself.
+This project explains how to get started with Raspberry Pi Pico on Windows (using the C/C++ SDK and GDB with a Pico Probe) and other RP2040-based boards. 
+It is inspired by, and is roughly equivalent to, the pico-setup project for Linux systems and a [Digikey tutorial](https://www.digikey.com/en/maker/projects/raspberry-pi-pico-and-rp2040-cc-part-1-blink-and-vs-code/7102fb8bca95452e9df6150f39ae8422) - Windows version -> [detailed websites that follow](https://shawnhymel.com/2096/how-to-set-up-raspberry-pi-pico-c-c-toolchain-on-windows-with-vs-code/).
 
-However, Shawn Hymel's Tutorial doesn't fully explain how to get GDB / OpenOCD working to debug the Pico. it also doesn't incorporate the new Pico Debug Probe, which I used and will explain how to setup.
+However, Shawn Hymel's Tutorial doesn't fully explain how to get GDB / OpenOCD working with a Pico debug probe, and there aren't many explanations online.
+** The second half of this tutorial is really where I figured out how to make a debug probe work and the steps you can follow to make it work too**
 
-# General Setup
+## General Compiling Setup
 
 Begin by downloading [Microsoft Visual Studio Code](https://code.visualstudio.com/) as it offers many tools (compiling, debugging, and extensions).
 
@@ -56,3 +58,26 @@ Run the installer and accept the user license. On Install Options, **select Add 
 
 Note that this will install CMake to C:\Program Files\CMake, which is fine, as it will be used as a system-wide tool (not just for VSARM projects).
 
+# Python Setup
+
+The Pico SDK relies on Python to script and automate some of the build functions.
+
+At the time of writing, the Pico SDK recommends Python version 3.9. I have made this work with Python 3.9, and attempted with 3.11.3 and it [TODO: WHETHER IT WORKED]
+
+Head to the [downloads page on the Python site.](https://www.python.org/downloads/)
+Install launcher for all users (recommended) is checked and check Add Python 3.9 to PATH.
+
+![image](https://github.com/Ezoorp/Pico_Executions/assets/112518361/ec10f781-677e-4e7b-9485-a788cdf43c2e)
+
+At the end of the installation process, select the option to disable the MAX_PATH length limit.
+
+If you were not asked to disable the MAX_PATH length limit, you will want to make sure that long paths are enabled. The Pico SDK (and many other SDKs) often have long, nested folders, resulting in pathnames that exceed the original Windows limit (260 characters).
+
+
+
+To enable long paths, search for "regedit" in the Windows search bar and run the Registry Editor program. Navigate to `Computer\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem` and add an entry (if one is not already there) for `LongPathsEnabled`. Change Value data to 1 and Base to Hexadecimal. 
+
+![image](https://github.com/Ezoorp/Pico_Executions/assets/112518361/186064fb-8ea0-41b8-8443-2ab0fab24192)
+
+# Install Git
+Git makes downloading the SDK and other peoples' code much easier. We can change the shell in Vs Code to Git Bash so we are essentially operating on a Linux.
