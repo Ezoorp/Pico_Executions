@@ -39,5 +39,20 @@ Use 7-Zip to unzip it into the C:\VSARM\mingw directory. Uncheck the named unzip
 ![image](https://github.com/Ezoorp/Pico_Executions/assets/112518361/3263508d-3c56-40d3-b8c8-f7905b65f59a)
 
 When it’s done, open a Windows Command Prompt and enter the following into the terminal:
-'echo mingw32-make %* > C:\VSARM\mingw\mingw32\bin\make.bat'
+
+`echo mingw32-make %* > C:\VSARM\mingw\mingw32\bin\make.bat`
+
+This creates a wrapper batch file that will call the mingw32-make tool whenever you type make into a Windows terminal. We will update the Windows Path to find all of the tools in mingw32\bin (along with this .bat file) in a later step.
+
+# Cmake Setup
+Although Cmake is not a compiler, it will automate many steps of compilation to make our lives easier during programming. The Raspberry Pi SDK uses Cmake to help create build files.
+
+Head to the [download page on CMake’s site.](https://cmake.org/download/) I use version 3.26.4. I attempted this with 3.27.2 and it [TODO: WHETHER IT WORKED]
+Download the windows installer (cmake-3.27.2-windows-x86_64.msi)
+
+Run the installer and accept the user license. On Install Options, **select Add CMake to the system PATH for all users.**
+
+![image](https://github.com/Ezoorp/Pico_Executions/assets/112518361/d27be66a-099c-4165-b797-771b6bced950)
+
+Note that this will install CMake to C:\Program Files\CMake, which is fine, as it will be used as a system-wide tool (not just for VSARM projects).
 
