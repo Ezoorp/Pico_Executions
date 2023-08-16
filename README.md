@@ -3,8 +3,9 @@
 This project explains how to get started with Raspberry Pi Pico on Windows (using the C/C++ SDK and GDB with a Pico Probe) and other RP2040-based boards. 
 It is roughly equivalent to, the pico-setup project for Linux systems and a [Digikey tutorial](https://www.digikey.com/en/maker/projects/raspberry-pi-pico-and-rp2040-cc-part-1-blink-and-vs-code/7102fb8bca95452e9df6150f39ae8422) - Windows version -> [detailed websites that follow](https://shawnhymel.com/2096/how-to-set-up-raspberry-pi-pico-c-c-toolchain-on-windows-with-vs-code/).
 
-However, Shawn Hymel's Tutorial doesn't fully explain how to get GDB / OpenOCD working with a Pico debug probe, and there aren't many explanations online.
-**The second half of this tutorial is how to setup a Pico debug probe on Windows**
+Although Shawn Hymel's Tutorial explains 90% of what it takes to get there, the new Pico Debug Probe has some issues with windows software. I spent a week breaking the software, making it work, and breaking it again and explain below how to get GDB / OpenOCD working, and there aren't many explanations online to do this from scratch.
+
+**The second half of this tutorial is how to setup a Pico Debug Probe on Windows**
 
 I am also leaving below a couple really awesome resources for the Pico:
 [Datasheet / Pinout](https://datasheets.raspberrypi.com/pico/pico-datasheet.pdf)
@@ -17,7 +18,10 @@ I am also leaving below a couple really awesome resources for the Pico:
 
 ## General Compiling Setup
 
-Begin by downloading [Microsoft Visual Studio Code](https://code.visualstudio.com/) as it offers many tools (compiling, debugging, and extensions). I also recommend downloading the C,Cmake,Cmake tools, and python extensions.
+Begin by downloading [Microsoft Visual Studio Code](https://code.visualstudio.com/) as it offers many tools (compiling, debugging, and extensions). I also recommend downloading the C,Cmake,Cmake tools, and python extensions. Make sure in Cmake tools extension settings (gear under extension) to configure MinGW Makefiles as your Cmake Generator:
+
+<img width="785" alt="image" src="https://github.com/Ezoorp/Pico_Executions/assets/112518361/93a0e2e2-9790-4f01-9ec7-db898b98b6b8">
+
 
 Now create a folder named "VSARM" in the top level of your C drive.
 In C:\VSARM, create the following folders:
@@ -216,7 +220,7 @@ Make sure you downloaded the C, Cmake, Cmake tools extensions on VS Code.
 
 
 # GNU Debugging Setup
-Debugging can be done with print statements, but at some point being able to break and see registers or run through operations helps a lot. However, such a tool is quite difficult to setup due to the complexity of the system required to debug.
+Debugging can be done with print statements, but at some point being able to break and see registers or run through operations helps a lot. However, such a tool is quite difficult to setup due to the complexity of the system required to debug. If you use any of the tools below for other chips / debugging, you can reuse a lot of the code and setup, but you can always link the specific OpenOCD or GDB build using the debug configurations.
 
 We will use GDB (GNU DeBugger) as it is a fairly common debugger for GNU based systems and we already downloaded it with the GCC downloads earlier. However we need a port on our computer to read data from the JTAG port on the Raspberry Pi. So let's get OpenOCD (On Chip Debugger) to do that.
 
@@ -278,6 +282,8 @@ The most important parameters are:
 1. searchDir should be the path to your openocd scripts (not the .exe) so OpenOCD can find your hardware configuration
 2. interface/cmsis-dap.cfg - this is the hardware configuration used to inteface with a debugger. Usually this is picoprobe, but we change it to cmsis-dap
 3. gdbTarget is usually RP2040 or picoprobe, but we changed it to localhost:3333 for the probe
+
+If you use OpenOCD for another chip and want to use this build for RPi Pico, just call this version from the JSON file. 
 
 Now we need to create a settings.json file to point to the openocd.exe
 
