@@ -1,6 +1,10 @@
 ## Pico Executions Project
 
 This project explains how to get started with Raspberry Pi Pico on Windows (using the C/C++ SDK and GDB with a Pico Probe) and other RP2040-based boards. 
+This page is meant to walk people through how to get started with a Raspberry Pi Pico and some small projects I made.
+
+In blink you can find the code to blink on a standard rapsberry pi pico. I also created blink-w, a blink file to blink on a raspberry pi pico-w.
+
 It is roughly equivalent to, the pico-setup project for Linux systems and a [Digikey tutorial](https://www.digikey.com/en/maker/projects/raspberry-pi-pico-and-rp2040-cc-part-1-blink-and-vs-code/7102fb8bca95452e9df6150f39ae8422) - Windows version -> [detailed websites that follow](https://shawnhymel.com/2096/how-to-set-up-raspberry-pi-pico-c-c-toolchain-on-windows-with-vs-code/).
 
 Although Shawn Hymel's Tutorial explains 90% of what it takes to get there, the new Pico Debug Probe has some issues with windows software. I spent a week breaking the software, making it work, and breaking it again and explain below how to get GDB / OpenOCD working, and there aren't many explanations online to do this from scratch.
