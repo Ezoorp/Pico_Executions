@@ -1,10 +1,10 @@
 ## Pico Executions Project
 
 This project explains how to get started with Raspberry Pi Pico on Windows (using the C/C++ SDK and GDB with a Pico Probe) and other RP2040-based boards. 
-It is inspired by, and is roughly equivalent to, the pico-setup project for Linux systems and a [Digikey tutorial](https://www.digikey.com/en/maker/projects/raspberry-pi-pico-and-rp2040-cc-part-1-blink-and-vs-code/7102fb8bca95452e9df6150f39ae8422) - Windows version -> [detailed websites that follow](https://shawnhymel.com/2096/how-to-set-up-raspberry-pi-pico-c-c-toolchain-on-windows-with-vs-code/).
+It is roughly equivalent to, the pico-setup project for Linux systems and a [Digikey tutorial](https://www.digikey.com/en/maker/projects/raspberry-pi-pico-and-rp2040-cc-part-1-blink-and-vs-code/7102fb8bca95452e9df6150f39ae8422) - Windows version -> [detailed websites that follow](https://shawnhymel.com/2096/how-to-set-up-raspberry-pi-pico-c-c-toolchain-on-windows-with-vs-code/).
 
 However, Shawn Hymel's Tutorial doesn't fully explain how to get GDB / OpenOCD working with a Pico debug probe, and there aren't many explanations online.
-**The second half of this tutorial is how to setup a debug probe on Windows**
+**The second half of this tutorial is how to setup a Pico debug probe on Windows**
 
 I am also leaving below a couple really awesome resources for the Pico:
 [Datasheet / Pinout](https://datasheets.raspberrypi.com/pico/pico-datasheet.pdf)
@@ -17,7 +17,7 @@ I am also leaving below a couple really awesome resources for the Pico:
 
 ## General Compiling Setup
 
-Begin by downloading [Microsoft Visual Studio Code](https://code.visualstudio.com/) as it offers many tools (compiling, debugging, and extensions).
+Begin by downloading [Microsoft Visual Studio Code](https://code.visualstudio.com/) as it offers many tools (compiling, debugging, and extensions). I also recommend downloading the C,Cmake,Cmake tools, and python extensions.
 
 Now create a folder named "VSARM" in the top level of your C drive.
 In C:\VSARM, create the following folders:
@@ -205,8 +205,156 @@ make
 ```
 Problem - Didnt compile.
 
+# Automating Compile/Build Process with Cmake / VSCode
+Rather than deal with compiling / linking the entire code base everytime we change the code, we can use some tools like Cmake to help us. 
+
+Note that compiling the examples from before are different from actually compiling a project from scratch due to the cmake structure used in those examples. I have added a blink folder with an example where we will practice building from within VS Code
+Make sure you downloaded the C, Cmake, Cmake tools extensions on VS Code.
+
+* insert shawn hymel stuff *
+
+
+
 ## GNU Debugging Setup
 Debugging can be done with print statements, but at some point being able to break and see registers or run through operations helps a lot. However, such a tool is quite difficult to setup due to the complexity of the system required to debug.
 
-We will use GDB (GNU DeBugger) as it is a fairly common debugger for GNU based systems. However due to the complexity of the debugger, it requires at least one core. Although the pico has two cores, the 
+We will use GDB (GNU DeBugger) as it is a fairly common debugger for GNU based systems and we already downloaded it with the GCC downloads earlier. However we need a port on our computer to read data from the JTAG port on the Raspberry Pi. So let's get OpenOCD (On Chip Debugger) to do that.
+
+# Setting up OpenOCD with Pico Debug Probe
+As of now, OpenOCD can work on windows, but it had problems before with the RP2040. Some people advocate for building OpenOCD yourself, which solved some issues on my previous projects, but to get you up and running, we will attempt using a pre-built OpenOCD. I tried (Shawn Hymel's IpenOCD tutorial)[https://shawnhymel.com/2168/how-to-build-openocd-and-picotool-for-the-raspberry-pi-pico-on-windows/], but his windows version of OpenOCD could not open the debug access port to communicate with the probe. Despite taking it apart and identifying the bug, it wouldn't work.
+
+But RPi has their own OpenOCD on their's website and it worked, so we are going with that.
+
+Downloaded OpenOCD zip off the (rpi pico website)[[https://www.raspberrypi.com/documentation/microcontrollers/debug-probe.html](https://github.com/raspberrypi/pico-setup-windows/releases/latest/download/openocd-x64-standalone.zip)] and unzip. We will call the openocd.exe from VSCode or the command line, so its important we put this somewhere safe and relevant like **C:/VSARM/openocd** or if you have another build of OpenOCD and only want this one for the Pico **C:/VSARM/sdk/pico/openocd**
+
+[**Insert photo here of the openocd in the folder on my comp**]
+
+# VS Code Setup
+
+Now download the Cortex Debug extension on VsCode.
+
+![image](https://github.com/Ezoorp/Pico_Executions/assets/112518361/aab699ac-3c81-4190-9c1b-55432f2082bf)
+
+We need to give the extension some relevant information about the debug port, the debugger, and the target system. Create a folder wherever you are writing your code called `.vscode` - do not do this in your pico examples code, that code has cmake setup for all the examples which doesnt work very well for this.
+
+In that folder make a file called launch.json and paste the following code:
+```
+
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Pico Debug",
+            "cwd": "${workspaceRoot}",
+            "executable": "${command:cmake.launchTargetPath}",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "external",
+            // This may need to be arm-none-eabi-gdb depending on your system
+            "gdbPath" : "arm-none-eabi-gdb",
+            "gdbTarget": "localhost:3333",
+            //"device": "RP2040",
+            "configFiles": [
+                "interface/cmsis-dap.cfg",
+                "target/rp2040.cfg"
+            ],
+
+            "svdFile": "${env:PICO_SDK_PATH}/src/rp2040/hardware_regs/rp2040.svd",
+            "runToEntryPoint": "main",
+            // Work around for stopping at main on restart
+            "postRestartCommands": [
+                "break main",
+                "continue"
+            ],
+            "searchDir": ["C:/VSARM/sdk/pico/openocd/scripts"],
+            "showDevDebugOutput": "raw"
+        }
+    ]
+}
+
+```
+The most important parameters are:
+1. searchDir should be the path to your openocd scripts (not the .exe) so OpenOCD can find your hardware configuration
+2. interface/cmsis-dap.cfg - this is the hardware configuration used to inteface with a debugger. Usually this is picoprobe, but we change it to cmsis-dap
+3. gdbTarget is usually RP2040 or picoprobe, but we changed it to localhost:3333 for the probe
+
+Now we need to create a settings.json file to point to the openocd.exe
+
+```
+{
+    // These settings tweaks to the cmake plugin will ensure
+    // that you debug using cortex-debug instead of trying to launch
+    // a Pico binary on the host
+    "cmake.statusbar.advanced": {
+        "debug": {
+            "visibility": "hidden"
+        },
+        "launch": {
+            "visibility": "hidden"
+        },
+        "build": {
+            "visibility": "default"
+        },
+        "buildTarget": {
+            "visibility": "hidden"
+        }
+    },
+    "cmake.buildBeforeRun": true,
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "cortex-debug.openocdPath": "<PATH TO OPENOCD.EXE>"
+}
+```
+
+make sure you include the path to the openocd.exe as shown above.
+
+Common error - using zip file instead of real openocd folder
+
+# Hardware Setup
+Now that the software is setup, lets try setting up the hardware. First plug in the pico probe to your computer and make sure it displays a red light to indicate it is on.
+Then plug the DEBUG connector on the probe to the SWD on the bottom of the picom (opposite the microusb port). Below shows how to wire it up if you don't have a connector:
+
+[TODO: diagram for plug in a connector]
+
+Now you can leave the microUSB in to continue sending commands through that, or connect the UART pins on the probe to the top three pins on the pico as shown below:
+
+![image](https://github.com/Ezoorp/Pico_Executions/assets/112518361/ec4e303b-ce06-48be-95ee-745055d9720b)
+
+I usually just use the microusb, but haven't experimented with this much.
+
+Now click the run and debug button on the left side bar of VS Code and there should be a green play button next to "pico Debug" in the top bar. This will be how you debug the pico. Feel free to set a break point or just run until main.
+
+This is the point at which bugs pop up, so pay attention to 
+1. The Output will tell you if it successfully compiled, linked, built the code you were planning to use
+2. The Terminal will tell you if OpenOCD succeeded in connecting to the Probe, the Pico, and uploading the code.
+
+If successful, a bar should pop up in the top with buttons to click through and debug the code. To check variables, you can look at them on the left bar under variables or you can print into the bottom bar under debug console and it will return variables you want to print.
+
+
+# How to run GDB command line (old school)
+Sometimes VSCode is being problematic and it helps to be able to run GDB from a command line. To do this, open git bash and we will basically run all the previous things, but from a command line:
+```
+cd <enter path to OpenOCD.exe here> ....
+./openocd.exe -s ../tcl -f interface/cmsis-dap.cfg -f target/rp2040.cfg -c "adapter speed 5000"
+
+```
+When this works it should return "Listening on port 3333"
+
+[TODO: insert an image of that here]
+
+Now we move to VSCode where we open a git bash terminal.
+**Build/cmake/make your code**
+```
+arm-none-eabi-gdb.exe {insert built program here.elf}
+target remote localhost:3333
+*insert breakpoints as you would in gdb*
+load
+monitor reset init
+*begin debugging/passing through breakpoints*
+```
+[TODO: insert an image of that here]
+
+**Note:** if you add breakpoints to the script, those breakpoints require reloading the program. Sometimes I would run and not see my breakpoints, but since this is embedded GDB we need to upload any change to the chip itself.
+
+
+Note the changes that need to be made to cmakelists for debug probe rather than picoprobe
 
