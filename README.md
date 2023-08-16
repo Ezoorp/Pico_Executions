@@ -337,9 +337,10 @@ cd <enter path to OpenOCD.exe here> ....
 ./openocd.exe -s ../tcl -f interface/cmsis-dap.cfg -f target/rp2040.cfg -c "adapter speed 5000"
 
 ```
-When this works it should return "Listening on port 3333"
+When this works it should return "Listening on port 3333" or "Using CMSIS-DAPv2 interface"
 
-[TODO: insert an image of that here]
+<img width="454" alt="image" src="https://github.com/Ezoorp/Pico_Executions/assets/112518361/fa1bf835-96b7-4e72-9714-f8d763a0443e">
+
 
 Now we move to VSCode where we open a git bash terminal.
 **Build/cmake/make your code**
@@ -351,7 +352,10 @@ load
 monitor reset init
 *begin debugging/passing through breakpoints*
 ```
-[TODO: insert an image of that here]
+<img width="462" alt="image" src="https://github.com/Ezoorp/Pico_Executions/assets/112518361/4c334759-8867-4451-a70e-58175e904fe7">
+
+<img width="657" alt="image" src="https://github.com/Ezoorp/Pico_Executions/assets/112518361/21db59ea-b48d-47d4-9798-81b470bf93af">
+
 
 **Note:** if you add breakpoints to the script, those breakpoints require reloading the program. Sometimes I would run and not see my breakpoints, but since this is embedded GDB we need to upload any change to the chip itself.
 
