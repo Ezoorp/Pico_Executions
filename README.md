@@ -215,7 +215,7 @@ Make sure you downloaded the C, Cmake, Cmake tools extensions on VS Code.
 
 
 
-## GNU Debugging Setup
+# GNU Debugging Setup
 Debugging can be done with print statements, but at some point being able to break and see registers or run through operations helps a lot. However, such a tool is quite difficult to setup due to the complexity of the system required to debug.
 
 We will use GDB (GNU DeBugger) as it is a fairly common debugger for GNU based systems and we already downloaded it with the GCC downloads earlier. However we need a port on our computer to read data from the JTAG port on the Raspberry Pi. So let's get OpenOCD (On Chip Debugger) to do that.
@@ -227,7 +227,8 @@ But RPi has their own OpenOCD on their's website and it worked, so we are going 
 
 Downloaded OpenOCD zip off the (rpi pico website)[[https://www.raspberrypi.com/documentation/microcontrollers/debug-probe.html](https://github.com/raspberrypi/pico-setup-windows/releases/latest/download/openocd-x64-standalone.zip)] and unzip. We will call the openocd.exe from VSCode or the command line, so its important we put this somewhere safe and relevant like **C:/VSARM/openocd** or if you have another build of OpenOCD and only want this one for the Pico **C:/VSARM/sdk/pico/openocd**
 
-[**Insert photo here of the openocd in the folder on my comp**]
+<img width="479" alt="image" src="https://github.com/Ezoorp/Pico_Executions/assets/112518361/23fca3c9-cead-4045-a7cf-9e2a3832e4a1">
+
 
 # VS Code Setup
 
@@ -323,11 +324,20 @@ I usually just use the microusb, but haven't experimented with this much.
 
 Now click the run and debug button on the left side bar of VS Code and there should be a green play button next to "pico Debug" in the top bar. This will be how you debug the pico. Feel free to set a break point or just run until main.
 
-This is the point at which bugs pop up, so pay attention to 
+<img width="479" alt="image" src="https://github.com/Ezoorp/Pico_Executions/assets/112518361/d0b3729c-d5c6-499c-b06d-e59e5347c3df">
+
+
+This is the point at which bugs pop up, so pay attention
 1. The Output will tell you if it successfully compiled, linked, built the code you were planning to use
 2. The Terminal will tell you if OpenOCD succeeded in connecting to the Probe, the Pico, and uploading the code.
+3. Make sure you cmake is set to debug and the compiler is set to ARM GCC
+
+<img width="641" alt="image" src="https://github.com/Ezoorp/Pico_Executions/assets/112518361/db4a0503-307f-45dd-a37c-9fdc66878352">
+
 
 If successful, a bar should pop up in the top with buttons to click through and debug the code. To check variables, you can look at them on the left bar under variables or you can print into the bottom bar under debug console and it will return variables you want to print.
+
+<img width="667" alt="image" src="https://github.com/Ezoorp/Pico_Executions/assets/112518361/b18275db-608f-4de4-9010-9de514f030bd">
 
 
 # How to run GDB command line (old school)
@@ -343,7 +353,7 @@ When this works it should return "Listening on port 3333" or "Using CMSIS-DAPv2 
 
 
 Now we move to VSCode where we open a git bash terminal.
-**Build/cmake/make your code**
+**Build/cmake/make your code and then run this command:**
 ```
 arm-none-eabi-gdb.exe {insert built program here.elf}
 target remote localhost:3333
